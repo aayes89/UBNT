@@ -1,0 +1,19 @@
+cd /etc/persistent
+touch rc.poststart
+chmod +x rc.poststart
+chmod -R 777 www
+echo "#!/bin/sh" > rc.poststart
+echo "insmod ubnt_spectral" >> rc.poststart
+echo "iwpriv wifi0 setCountry UB" >> rc.poststart
+echo "ifconfig ath0 down" >> rc.poststart
+echo "ifconfig wifi0 down" >> rc.poststart
+echo "sleep 5" >> rc.poststart
+echo "rmmod ubnt_spectral" >> rc.poststart
+echo "ifconfig ath0 up" >> rc.poststart
+echo "ifconfig wifi0 up" >> rc.poststart
+echo "countrycode=511" > /var/etc/atheros.conf
+echo "sed -i 's/840/511/g' /tmp/system.cfg" >> rc.poststart
+echo "<option value="511">Compliance Test</option>" >> /var/etc/ccodes.inc
+save
+cfgmtd -w -p /etc
+reboot
